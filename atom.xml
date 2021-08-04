@@ -3,11 +3,11 @@
   <title>CluckBird</title>
   
   <subtitle>Blog</subtitle>
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="https://blog.cluckbird.cc/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="https://blog.cluckbird.cc/"/>
   <updated>2021-08-04T06:28:42.007Z</updated>
-  <id>http://example.com/</id>
+  <id>https://blog.cluckbird.cc/</id>
   
   <author>
     <name>CluckBird</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>淺談前端模板pug</title>
-    <link href="http://example.com/2021/08/03/%E6%B7%BA%E8%AB%87%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BFpug/"/>
-    <id>http://example.com/2021/08/03/%E6%B7%BA%E8%AB%87%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BFpug/</id>
+    <link href="https://blog.cluckbird.cc/2021/08/03/%E6%B7%BA%E8%AB%87%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BFpug/"/>
+    <id>https://blog.cluckbird.cc/2021/08/03/%E6%B7%BA%E8%AB%87%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BFpug/</id>
     <published>2021-08-03T07:48:17.000Z</published>
     <updated>2021-08-04T06:28:42.007Z</updated>
     
@@ -35,7 +35,7 @@
     
     
     
-    <category term="前端" scheme="http://example.com/tags/%E5%89%8D%E7%AB%AF/"/>
+    <category term="前端" scheme="https://blog.cluckbird.cc/tags/%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   
