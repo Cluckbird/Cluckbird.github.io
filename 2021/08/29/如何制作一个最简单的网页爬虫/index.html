@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title>如何制作一个最简单的网页爬虫 | CluckBird</title><meta name="description" content="如何制作一个最简单的网页爬虫 - CluckBird"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="https://ci.cncn3.cn/3934a3d8e5fce6a1d102c133b7d62222.png"><link rel="stylesheet" href="/css/theme.min.css"><link rel="search" type="application/opensearchdescription+xml" href="/atom.xml" title="CluckBird"><link rel="stylesheet" href="/css/font-awesome.min.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="CluckBird" type="application/atom+xml">
+</head><body><div class="wrap"><header><h1 class="branding"><a href="/" title="CluckBird"><span class="logo-image">CluckBird</span></a></h1><ul class="nav nav-list"><li class="nav-list-item"><!--a.nav-list-link(class={active: act} href=url_for(value), target=tar)--><a class="nav-list-link" href="/" target="_self">首頁</a></li><li class="nav-list-item"><!--a.nav-list-link(class={active: act} href=url_for(value), target=tar)--><a class="nav-list-link" href="/archives" target="_self">歸檔</a></li><li class="nav-list-item"><!--a.nav-list-link(class={active: act} href=url_for(value), target=tar)--><a class="nav-list-link" href="/about" target="_self">關於</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">如何制作一个最简单的网页爬虫</h1><p class="post-info"><i class="fa fa-calendar">&nbsp;</i>2021-08-29&nbsp;| <i class="fa fa-tags">&nbsp;</i><a class="post-tag-link" href="/tags/%E5%90%8E%E7%AB%AF/">后端&nbsp;·&nbsp;</a><a class="post-tag-link" href="/tags/%E7%88%AC%E8%99%AB/">爬虫&nbsp;·&nbsp;</a><a class="post-tag-link" href="/tags/%E6%95%99%E7%A8%8B/">教程&nbsp;·&nbsp;</a>&nbsp;| <i class="fa fa-folder-o">&nbsp;</i><a class="post-category-link" target="_blank" rel="noopener" href="https://github.com/cluckbird">Full Stand developer</a></p><div class="post-content"><h4 id="爬虫是什么？"><a href="#爬虫是什么？" class="headerlink" title="爬虫是什么？"></a>爬虫是什么？</h4><p>爬虫是一种自动化程式，用于自动爬取网络上的讯息，被爬取的目标大多是网页</p>
+<h4 id="爬虫能做什么？"><a href="#爬虫能做什么？" class="headerlink" title="爬虫能做什么？"></a>爬虫能做什么？</h4><p>当然是自动化的爬取网页上的内容，这些内容可以是图片、文字<br>具体的使用例就比如 <del>pixiv</del> 爬虫，可以自动化的帮助我们爬取今日的 <del>R18</del> 排行榜</p>
+<h1 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h1><p>因为是最简单的网页爬虫，所以我们这里选择使用 Python 开发。Python 拥有大量便于爬虫开发的库，可以十分方便的发起HTTP请求并使用正则过滤。</p>
+<blockquote>
+<p>如果阁下不了解Python是什么，请详见Python官网: <a target="_blank" rel="noopener" href="https://python.org/">python.org</a></p>
+</blockquote>
+<h2 id="创建文件"><a href="#创建文件" class="headerlink" title="创建文件"></a>创建文件</h2><p>创建一个空白目录，在目录中创建一个 <code>.py</code> 文件，并导入我们这次需要使用的两个库: <code>requests</code>  <code>re</code></p>
+<ul>
+<li><code>requests</code> 方便的发起 HTTP 请求</li>
+<li><code>re</code> 使用正则表达式过滤文字 </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re</span><br></pre></td></tr></table></figure>
+
+<h2 id="选定目标"><a href="#选定目标" class="headerlink" title="选定目标"></a>选定目标</h2><p>我们爬取的目标选择 HK01 的新闻</p>
+<ul>
+<li>新闻标题</li>
+<li>撰文人</li>
+<li>内容和图片</li>
+</ul>
+<p><img src="https://ci.cncn3.cn/a891e52e92ff48b6ced160172b568a61.png" alt="示例"></p>
+<h2 id="模拟浏览器发起-HTTP-请求"><a href="#模拟浏览器发起-HTTP-请求" class="headerlink" title="模拟浏览器发起 HTTP 请求"></a>模拟浏览器发起 HTTP 请求</h2><p>大部分网站的反爬机制都不会很严格，我们只需要添加用户代理头就可以通过验证（如果有其他验证，请尝试添加其他常见请求头）</p>
+<ul>
+<li>这里我们只添加 user-agent<ul>
+<li><code>user-agent</code> 可以翻译为用户代理，表明用户使用的浏览器版本，装置设备等信息</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re</span><br><span class="line"></span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.78&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发起 Get 请求并取 text(html)</span></span><br><span class="line">html = requests.get(<span class="string">&quot;https://www.hk01.com/%E7%AA%81%E7%99%BC/669730/%E9%A6%AC%E6%96%99%E6%B0%B4%E5%BE%80%E6%9D%B1%E5%B9%B3%E6%B4%B2%E6%B8%A1%E8%BC%AA%E5%86%92%E7%85%99-320%E4%B9%98%E5%AE%A2%E5%8F%8A%E8%88%B9%E5%93%A1%E9%A0%86%E5%88%A9%E7%96%8F%E6%95%A3&quot;</span>).text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出刚刚请求到的内容</span></span><br><span class="line"><span class="built_in">print</span>(html)</span><br></pre></td></tr></table></figure>
+
+<p>如果这里一切正常的话，运行程式应该可以看到这个页面的html原始码</p>
+<h2 id="过滤html"><a href="#过滤html" class="headerlink" title="过滤html"></a>过滤html</h2><p>下一步是从请求到的HTML原始码内得到我们想要得到的内容，这个时候就用到了 re 库（正则匹配）</p>
+<p>我们可以使用开发人员工具（在浏览器点击 F12 打开）来阅读这个页面的HTML原始码，来编写匹配使用的正则表达式</p>
+<p><img src="https://ci.cncn3.cn/20509522aac9028f8784e3e66ed1a372.png" alt="示例"></p>
+<p>发现这里的内容有固定的id名和标签名，我们就可以按这个特征来写正则表达式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;h1 id=\&quot;articleTitle\&quot;([\s\S]*?)&gt;([\s\S]*?)\&lt;\/h1\&gt;&#x27;</span>).findall(html)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(title)</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(<span class="string">&#x27; data-author=&quot;朱雅霜&quot; data-category=&quot;突發&quot; data-type=&quot;article&quot; class=&quot;text-2xl md:text-2.5xl mb-3 md:mb-4 font-semibold text-black-78&quot;&#x27;</span>, <span class="string">&#x27;馬料水往東平洲渡輪冒煙\u3000320乘客及船員順利疏散&#x27;</span>)]</span><br></pre></td></tr></table></figure>
+<p>这里输出的内容是一个列表套着一个元组，代表有一个匹配项和两个子匹配项，第二个子匹配项是我们需要的标题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以使用下标的方式取出内容（这里的\u3000320是unicode码）</span></span><br><span class="line"><span class="built_in">print</span>(title[<span class="number">0</span>][<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">馬料水往東平洲渡輪冒煙　320乘客及船員順利疏散</span><br></pre></td></tr></table></figure>
+
+<h2 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h2><p>按这个方法完成所有的内容，并输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, re</span><br><span class="line"></span><br><span class="line"><span class="comment"># 伪造的 HTTP 请求头</span></span><br><span class="line">header = &#123;</span><br><span class="line">    <span class="string">&quot;user-agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.78&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发起 Get 请求并取 text(html)</span></span><br><span class="line">html = requests.get(<span class="string">&quot;https://www.hk01.com/%E7%AA%81%E7%99%BC/669730/%E9%A6%AC%E6%96%99%E6%B0%B4%E5%BE%80%E6%9D%B1%E5%B9%B3%E6%B4%B2%E6%B8%A1%E8%BC%AA%E5%86%92%E7%85%99-320%E4%B9%98%E5%AE%A2%E5%8F%8A%E8%88%B9%E5%93%A1%E9%A0%86%E5%88%A9%E7%96%8F%E6%95%A3&quot;</span>).text</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则匹配标题</span></span><br><span class="line">title = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;h1 id=\&quot;articleTitle\&quot;([\s\S]*?)&gt;([\s\S]*?)\&lt;\/h1\&gt;&#x27;</span>).findall(html)</span><br><span class="line"><span class="comment"># 正则匹配撰稿人</span></span><br><span class="line">author = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;div class=\&quot;text-sm leading-6	text-black-40 mb-0.5 flex flex-row md:pb-0.75\&quot;&gt;&lt;span class=\&quot;flex whitespace-nowrap\&quot;&gt;撰文：&lt;\/span&gt;&lt;span class=\&quot;flex\&quot;&gt;([\s\S]*?)&lt;\/span&gt;&lt;\/div&gt;&#x27;</span>).findall(html)</span><br><span class="line"><span class="comment"># 正则匹配正文内容</span></span><br><span class="line">text = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;article id=\&quot;article-content-section\&quot; class=&quot;cmp-article-detail&quot;&gt;([\s\S]*?)&lt;\/article&gt;&#x27;</span>).findall(html)[<span class="number">0</span>]</span><br><span class="line"><span class="comment"># 取所有html tag</span></span><br><span class="line">tag = re.<span class="built_in">compile</span>(<span class="string">r&#x27;&lt;([\s\S]*?)&gt;&#x27;</span>).findall(text)</span><br><span class="line"><span class="comment"># 循环替换为空</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tag:</span><br><span class="line">    text = text.replace(<span class="string">&quot;&lt;&quot;</span>+i+<span class="string">&quot;&gt;&quot;</span>, <span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(title[<span class="number">0</span>][<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(author[<span class="number">0</span>])</span><br><span class="line"><span class="built_in">print</span>(text)</span><br></pre></td></tr></table></figure>
+<p>输出:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">馬料水往東平洲渡輪冒煙　320乘客及船員順利疏散</span><br><span class="line">朱雅霜 楊嘉朗</span><br><span class="line">今（29日）早10時許，一艘載320人的翠華船務渡輪，由馬料水開往東平洲，航行途中冒出濃煙。消防趕往現場，開喉為船隻降溫，翠華船務派出另一艘渡輪到場，在消防及水警協助下「船過船」疏散。上午11時37分，火警升為二級。船上318名乘客及2名船員全數順利登</span><br><span class="line">上另一艘渡輪，其後抵達東平洲，事故中無人受傷。一艘由馬料水開往東平洲的渡輪於途中冒煙，船上逾300人需疏散。（楊嘉朗攝）01新聞</span><br></pre></td></tr></table></figure>
+
+<p><del>图片因为懒得写所以没写</del></p>
+</div></article></div><div class="article"><hr><h2>版權聲明</h2>| 作者：<a target="_blank" rel="noopener" href="https://github.com/cluckbird">CluckBird</a><br>| URL：<a href="https://blog.cluckbird.cc/2021/08/29/%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E7%BD%91%E9%A1%B5%E7%88%AC%E8%99%AB/" style="word-break: break-all;">https://blog.cluckbird.cc/2021/08/29/%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E7%BD%91%E9%A1%B5%E7%88%AC%E8%99%AB/</a><br>| 許可協議：<a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知識共享署名-非商業性使用-相同方式共享 4.0 國際許可協議</a><hr></div></main><footer><div class="paginator"><a class="next" href="/2021/08/03/%E6%B7%BA%E8%AB%87%E5%89%8D%E7%AB%AF%E6%A8%A1%E6%9D%BFpug/"><!--!= __('NEXT_POST >')-->淺談前端模板pug ></a></div><div class="clearfix"></div><div class="copyright"><p id="host_by"> <a href="/atom.xml" style="margin: 3px"><i class="fa fa-rss"></i></a><a target="_blank" rel="noopener" href="https://t.me/mumubird" style="margin: 3px"><i class="fa fa-telegram"></i></a><a target="_blank" rel="noopener" href="https://github.com/cluckbird" style="margin: 3px"><i class="fa fa-github"></i></a><a target="_blank" rel="noopener" href="https://twitter.com/cluckbird" style="margin: 3px"><i class="fa fa-twitter"></i></a><br> &copy; 2019 - 2021 <a target="_blank" rel="noopener" href="https://github.com/cluckbird">CluckBird</a>. 
+ Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> &amp; <a href="https://github.com/wwwuxt/hexo-theme-artemisX" target="_blank">ArtemisX</a>.<br></p></div></footer></div><script src="https://www.googletagmanager.com/gtag/js?id=G-0HXMHD3RYH"> </script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0HXMHD3RYH');
+</script><script>(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https'){
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else{
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script><script>(function(){
+    var req = GetXmlHttpObject()  
+    if (req == null) {  
+        console.log("not support AJAX!");  
+        return;  
+    }
+    req.onreadystatechange = function() {  
+        if (req.readyState === 4 && req.status === 200) {  
+            var deploy_server = req.getResponseHeader("Server");
+            console.log(deploy_server)
+            if(deploy_server === 'Coding Pages'){
+                document.getElementById('host_by').innerHTML+='Hosted by <a target="_blank" rel="noopener" href="https://pages.coding.me" style="font-weight: bold">Coding Pages</a>.'
+            }
+            else if(deploy_server === 'GitHub.com'){
+                document.getElementById('host_by').innerHTML+='Hosted by <a target="_blank" rel="noopener" href="https://pages.github.com" style="font-weight: bold">GitHub Pages</a>.'
+            }
+            else{
+                document.getElementById('host_by').innerHTML+='Hosted by <a href="#" style="font-weight: bold">'+ deploy_server + '</a>.'
+            }
+        }  
+    };  
+    req.open('GET', document.location, true);
+    req.send(null);
+})();
+function GetXmlHttpObject() {  
+    var xmlHttp = null;  
+    try {  
+        // Firefox, Opera 8.0+, Safari  
+        xmlHttp = new XMLHttpRequest();  
+    } catch (e) {  
+        // Internet Explorer  
+        try {  
+            xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");  
+        } catch (e) {  
+            xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");  
+        }  
+    }  
+    return xmlHttp;  
+}  </script></body></html>
